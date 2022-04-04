@@ -18,7 +18,14 @@ class UserListState extends State<UserList> {
   @override
   void initState() {
     super.initState();
-    _getUsers();
+    _getUsers().then((value) {
+      setState(() {
+        _userResponseList = value;
+      });
+    }).catchError((error) {
+      print("get users error:$error");
+      // TODO(Show error)
+    });
   }
 
   // TODO(Empty state)
@@ -48,18 +55,12 @@ class UserListState extends State<UserList> {
   }
 
   // TODO(Separation of concerns & DI)
-  void _getUsers() async {
-    try {
-      final dio = Dio();
-      dio.interceptors.add(dioLoggerInterceptor);
-      final response = await dio.get("https://api.github.com/users");
-      setState(() {
-        _userResponseList = (response.data as List)
-            .map((e) => UserResponse.fromJson(e))
-            .toList();
-      });
-    } catch (e) {
-      // TODO(Show error)
-    }
+  Future _getUsers() async {
+    final dio = Dio();
+    dio.interceptors.add(dioLoggerInterceptor);
+    final response = await dio.get("https://api.github.com/users");
+    return (response.data as List)
+        .map((e) => UserResponse.fromJson(e))
+        .toList();
   }
 }

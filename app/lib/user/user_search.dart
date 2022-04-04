@@ -17,18 +17,12 @@ class UserSearchState extends State<UserSearch> {
   SearchUsersResponse? _searchUsersResponse;
 
   // TODO(Separation of concerns & DI)
-  void _searchUsers(String query) async {
-    try {
-      final dio = Dio();
-      dio.interceptors.add(dioLoggerInterceptor);
-      final response = await dio.get("https://api.github.com/search/users",
-          queryParameters: {"q": query});
-      setState(() {
-        _searchUsersResponse = SearchUsersResponse.fromJson(response.data);
-      });
-    } catch (e) {
-      // TODO(Show error)
-    }
+  Future<SearchUsersResponse?> _searchUsers(String query) async {
+    final dio = Dio();
+    dio.interceptors.add(dioLoggerInterceptor);
+    final response = await dio.get("https://api.github.com/search/users",
+        queryParameters: {"q": query});
+    return SearchUsersResponse.fromJson(response.data);
   }
 
   // TODO(Empty state)
@@ -40,17 +34,17 @@ class UserSearchState extends State<UserSearch> {
       ),
       body: Column(
         children: [
-          TextField(
-            keyboardType: TextInputType.name,
-            textInputAction: TextInputAction.search,
-            decoration: const InputDecoration(
-              label: Text("User name"),
-              suffixIcon: Icon(Icons.search),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: TextField(
+              keyboardType: TextInputType.name,
+              textInputAction: TextInputAction.search,
+              decoration: const InputDecoration(
+                label: Text("User name"),
+                suffixIcon: Icon(Icons.search),
+              ),
+              onChanged: _onTextChanged,
             ),
-            onChanged: (text) => {
-              _debouncer.start(
-                  const Duration(milliseconds: 300), () => _searchUsers(text))
-            },
           ),
           Expanded(
             child: UserListView(
@@ -61,6 +55,25 @@ class UserSearchState extends State<UserSearch> {
         ],
       ),
     );
+  }
+
+  void _onTextChanged(text) {
+    _debouncer.start(const Duration(milliseconds: 300), () {
+      if (text.isEmpty) {
+        setState(() {
+          _searchUsersResponse = null;
+        });
+      } else {
+        _searchUsers(text).then((value) {
+          setState(() {
+            _searchUsersResponse = value;
+          });
+        }).catchError((error) {
+          print("search users error:$error");
+          // TODO(Show error)
+        });
+      }
+    });
   }
 
   @override

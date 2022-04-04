@@ -1,4 +1,6 @@
-import 'package:app/shared/data/user_list/UserResponse.dart';
+import 'package:app/shared/data/user/UserResponse.dart';
+import 'package:app/user/UserListView.dart';
+import 'package:app/user/UserSearch.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_logger/dio_logger.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +21,32 @@ class UserListState extends State<UserList> {
     _getUsers();
   }
 
+  // TODO(Empty state)
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Users"),
+        actions: [
+          IconButton(
+            onPressed: () => {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const UserSearch(),
+                  ))
+            },
+            icon: const Icon(Icons.search),
+          )
+        ],
+      ),
+      body: UserListView(
+        userResponseList: _userResponseList,
+        onUserTap: () => {},
+      ),
+    );
+  }
+
   // TODO(Separation of concerns & DI)
   void _getUsers() async {
     try {
@@ -30,34 +58,8 @@ class UserListState extends State<UserList> {
             .map((e) => UserResponse.fromJson(e))
             .toList();
       });
-    } catch (e) {}
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final list = _userResponseList;
-    return Scaffold(
-        appBar: AppBar(
-          title: const Text("Users"),
-        ),
-        body: ListView.separated(
-          itemCount: list.length,
-          itemBuilder: (context, index) {
-            final item = list[index];
-            return ListTile(
-              leading: CircleAvatar(
-                backgroundImage: NetworkImage(
-                  item.avatarUrl ?? "",
-                ),
-              ),
-              title: Text(
-                item.login ?? "",
-              ),
-            );
-          },
-          separatorBuilder: (context, index) {
-            return const Divider();
-          },
-        ));
+    } catch (e) {
+      // TODO(Show error)
+    }
   }
 }

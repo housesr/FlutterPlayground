@@ -1,6 +1,6 @@
-import 'package:app/shared/data/user/SearchUsersResponse.dart';
-import 'package:app/shared/util/Debouncer.dart';
-import 'package:app/user/UserListView.dart';
+import 'package:app/shared/data/user/search_users_response.dart';
+import 'package:app/shared/util/debouncer.dart';
+import 'package:app/user/user_list_view.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_logger/dio_logger.dart';
 import 'package:flutter/material.dart';

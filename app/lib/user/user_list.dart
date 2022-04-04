@@ -1,6 +1,6 @@
-import 'package:app/shared/data/user/UserResponse.dart';
-import 'package:app/user/UserListView.dart';
-import 'package:app/user/UserSearch.dart';
+import 'package:app/shared/data/user/user_response.dart';
+import 'package:app/user/user_list_view.dart';
+import 'package:app/user/user_search.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_logger/dio_logger.dart';
 import 'package:flutter/material.dart';

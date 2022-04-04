@@ -1,4 +1,4 @@
-import 'package:app/shared/data/user/UserResponse.dart';
+import 'package:app/shared/data/user/user_response.dart';
 import 'package:flutter/material.dart';
 
 class UserListView extends StatelessWidget {

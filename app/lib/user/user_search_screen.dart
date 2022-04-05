@@ -5,14 +5,14 @@ import 'package:dio/dio.dart';
 import 'package:dio_logger/dio_logger.dart';
 import 'package:flutter/material.dart';
 
-class UserSearch extends StatefulWidget {
-  const UserSearch({Key? key}) : super(key: key);
+class UserSearchScreen extends StatefulWidget {
+  const UserSearchScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => UserSearchState();
+  State<StatefulWidget> createState() => UserSearchScreenState();
 }
 
-class UserSearchState extends State<UserSearch> {
+class UserSearchScreenState extends State<UserSearchScreen> {
   final Debouncer _debouncer = Debouncer();
   SearchUsersResponse? _searchUsersResponse;
 
@@ -69,7 +69,7 @@ class UserSearchState extends State<UserSearch> {
             _searchUsersResponse = value;
           });
         }).catchError((error) {
-          print("search users error:$error");
+          debugPrint("search users error:$error");
           // TODO(Show error)
         });
       }

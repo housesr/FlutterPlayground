@@ -1,18 +1,18 @@
 import 'package:app/shared/data/user/user_response.dart';
 import 'package:app/user/user_list_view.dart';
-import 'package:app/user/user_search.dart';
+import 'package:app/user/user_search_screen.dart';
 import 'package:dio/dio.dart';
 import 'package:dio_logger/dio_logger.dart';
 import 'package:flutter/material.dart';
 
-class UserList extends StatefulWidget {
-  const UserList({Key? key}) : super(key: key);
+class UserListScreen extends StatefulWidget {
+  const UserListScreen({Key? key}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() => UserListState();
+  State<StatefulWidget> createState() => UserListScreenState();
 }
 
-class UserListState extends State<UserList> {
+class UserListScreenState extends State<UserListScreen> {
   List<UserResponse> _userResponseList = [];
 
   @override
@@ -23,7 +23,7 @@ class UserListState extends State<UserList> {
         _userResponseList = value;
       });
     }).catchError((error) {
-      print("get users error:$error");
+      debugPrint("get users error:$error");
       // TODO(Show error)
     });
   }
@@ -40,7 +40,7 @@ class UserListState extends State<UserList> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const UserSearch(),
+                    builder: (context) => const UserSearchScreen(),
                   ))
             },
             icon: const Icon(Icons.search),

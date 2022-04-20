@@ -1,4 +1,4 @@
-import 'package:app/shared/data/user/user_response.dart';
+import 'package:app/shared/data/user/entities/user_response.dart';
 
 class SearchUsersResponse {
   int? totalCount;

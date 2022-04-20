@@ -1,4 +1,4 @@
-import 'package:app/shared/data/user/search_users_response.dart';
+import 'package:app/shared/data/user/entities/search_users_response.dart';
 import 'package:app/shared/service_locators/service_locator.dart';
 import 'package:dio/dio.dart';
 

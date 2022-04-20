@@ -1,8 +1,8 @@
 import 'package:app/shared/data/user/search_users_response.dart';
+import 'package:app/shared/domain/user/use_cases/search_users_use_case.dart';
+import 'package:app/shared/service_locators/service_locator.dart';
 import 'package:app/shared/util/debouncer.dart';
 import 'package:app/user/user_list_view.dart';
-import 'package:dio/dio.dart';
-import 'package:dio_logger/dio_logger.dart';
 import 'package:flutter/material.dart';
 
 class UserSearchScreen extends StatefulWidget {
@@ -15,15 +15,6 @@ class UserSearchScreen extends StatefulWidget {
 class UserSearchScreenState extends State<UserSearchScreen> {
   final Debouncer _debouncer = Debouncer();
   SearchUsersResponse? _searchUsersResponse;
-
-  // TODO(Separation of concerns & DI)
-  Future<SearchUsersResponse?> _searchUsers(String query) async {
-    final dio = Dio();
-    dio.interceptors.add(dioLoggerInterceptor);
-    final response = await dio.get("https://api.github.com/search/users",
-        queryParameters: {"q": query});
-    return SearchUsersResponse.fromJson(response.data);
-  }
 
   // TODO(Empty state)
   @override
@@ -64,7 +55,7 @@ class UserSearchScreenState extends State<UserSearchScreen> {
           _searchUsersResponse = null;
         });
       } else {
-        _searchUsers(text).then((value) {
+        getIt.get<SearchUsersUseCase>().execute(text).then((value) {
           setState(() {
             _searchUsersResponse = value;
           });

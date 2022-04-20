@@ -1,8 +1,8 @@
 import 'package:app/shared/data/user/user_response.dart';
+import 'package:app/shared/domain/user/use_cases/get_users_use_case.dart';
+import 'package:app/shared/service_locators/service_locator.dart';
 import 'package:app/user/user_list_view.dart';
 import 'package:app/user/user_search_screen.dart';
-import 'package:dio/dio.dart';
-import 'package:dio_logger/dio_logger.dart';
 import 'package:flutter/material.dart';
 
 class UserListScreen extends StatefulWidget {
@@ -18,7 +18,7 @@ class UserListScreenState extends State<UserListScreen> {
   @override
   void initState() {
     super.initState();
-    _getUsers().then((value) {
+    getIt.get<GetUsersUseCase>().execute().then((value) {
       setState(() {
         _userResponseList = value;
       });
@@ -52,15 +52,5 @@ class UserListScreenState extends State<UserListScreen> {
         onUserTap: () => {},
       ),
     );
-  }
-
-  // TODO(Separation of concerns & DI)
-  Future _getUsers() async {
-    final dio = Dio();
-    dio.interceptors.add(dioLoggerInterceptor);
-    final response = await dio.get("https://api.github.com/users");
-    return (response.data as List)
-        .map((e) => UserResponse.fromJson(e))
-        .toList();
   }
 }

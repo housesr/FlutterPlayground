@@ -1,7 +1,9 @@
+import 'package:app/shared/service_locators/service_locator.dart';
 import 'package:app/user/user_list_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
+  ServiceLocator.setup();
   runApp(const MyApp());
 }
 

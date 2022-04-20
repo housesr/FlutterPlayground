@@ -1,9 +1,8 @@
-import 'package:app/shared/data/user/search_users_response.dart';
-import 'package:app/shared/domain/user/use_cases/search_users_use_case.dart';
-import 'package:app/shared/service_locators/service_locator.dart';
-import 'package:app/shared/util/debouncer.dart';
-import 'package:app/user/user_list_view.dart';
+import 'package:app/shared/utils/debouncer.dart';
+import 'package:app/user/user_search/user_search_view_model.dart';
+import 'package:app/user/widgets/user_list_view.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class UserSearchScreen extends StatefulWidget {
   const UserSearchScreen({Key? key}) : super(key: key);
@@ -14,9 +13,7 @@ class UserSearchScreen extends StatefulWidget {
 
 class UserSearchScreenState extends State<UserSearchScreen> {
   final Debouncer _debouncer = Debouncer();
-  SearchUsersResponse? _searchUsersResponse;
 
-  // TODO(Empty state)
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,7 +36,11 @@ class UserSearchScreenState extends State<UserSearchScreen> {
           ),
           Expanded(
             child: UserListView(
-              userResponseList: _searchUsersResponse?.items ?? [],
+              userResponseList: context
+                      .watch<UserSearchViewModel>()
+                      .searchUsersResponse
+                      ?.items ??
+                  [],
               onUserTap: () => {},
             ),
           ),
@@ -50,20 +51,7 @@ class UserSearchScreenState extends State<UserSearchScreen> {
 
   void _onTextChanged(text) {
     _debouncer.start(const Duration(milliseconds: 300), () {
-      if (text.isEmpty) {
-        setState(() {
-          _searchUsersResponse = null;
-        });
-      } else {
-        getIt.get<SearchUsersUseCase>().execute(text).then((value) {
-          setState(() {
-            _searchUsersResponse = value;
-          });
-        }).catchError((error) {
-          debugPrint("search users error:$error");
-          // TODO(Show error)
-        });
-      }
+      context.read<UserSearchViewModel>().search(text);
     });
   }
 
